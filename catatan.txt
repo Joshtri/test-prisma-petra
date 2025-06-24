@@ -1,0 +1,78 @@
+# Catatan Instalasi Prisma dan Lainnya
+
+## Instalasi Prisma
+1. Inisialisasi project Node.js:
+    ```
+    npm init -y
+    ```
+
+2. Instalasi Prisma CLI sebagai dependensi pengembangan:
+    ```
+    npm install prisma --save-dev
+    ```
+
+3. Inisialisasi Prisma di project:
+    ```
+    npx prisma init
+    ```
+
+4. Konfigurasi database di file .env:
+    ```
+    DATABASE_URL="postgresql://username:password@localhost:5432/mydb"
+    ```
+
+## Setup Schema Prisma
+1. Edit file prisma/schema.prisma untuk mendefinisikan model data
+2. Contoh model dasar:
+    ```prisma
+    model User {
+      id        Int      @id @default(autoincrement())
+      email     String   @unique
+      name      String?
+      createdAt DateTime @default(now())
+    }
+    ```
+
+3. Generate Prisma Client:
+    ```
+    npx prisma generate
+    ```
+
+4. Migrate database:
+    ```
+    npx prisma migrate dev --name init
+    ```
+
+## Penggunaan Prisma Client
+1. Instalasi Prisma Client:
+    ```
+    npm install @prisma/client
+    ```
+
+2. Contoh kode dasar:
+    ```javascript
+    const { PrismaClient } = require('@prisma/client')
+    const prisma = new PrismaClient()
+
+    async function main() {
+      // Query data
+      const users = await prisma.user.findMany()
+      console.log(users)
+    }
+
+    main()
+      .catch((e) => console.error(e))
+      .finally(async () => await prisma.$disconnect())
+    ```
+
+## Perintah Prisma Penting
+- `npx prisma studio` - Buka GUI untuk melihat dan edit data
+- `npx prisma format` - Format file schema.prisma
+- `npx prisma validate` - Validasi schema
+- `npx prisma db pull` - Introspeksi database yang sudah ada
+- `npx prisma db push` - Push schema ke database tanpa migrations
+
+## Troubleshooting
+- Reset database: `npx prisma migrate reset`
+- Update client setelah perubahan schema: `npx prisma generate`
+- Jika terjadi error koneksi, cek URL database di .env
